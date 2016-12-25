@@ -43,6 +43,7 @@
 
             (global-set-key (kbd "M-y") 'helm-show-kill-ring)
             (global-set-key (kbd "C-x b") 'helm-mini)
+            (global-set-key (kbd "C-x C-f") 'helm-find-files)
             (global-set-key (kbd "C-c h o") 'helm-occur)
 
             )
@@ -57,7 +58,18 @@
 (use-package auto-virtualenv :ensure t)
 (use-package column-marker :ensure t)
 (use-package jedi
-  :config (jedi:install-server)
+  :config (progn
+            (jedi:install-server)
+
+            (defun jedi:related-names--source (name candidates)
+              "Override the default implementation so that the
+default action jumps to the file.  Modern helm evidently doesn't
+understand 'type."
+              `((name . ,name)
+                (candidates . ,candidates)
+                (recenter)
+                (action . helm-grep-action)))
+            )
   :ensure t)
 (use-package python
   :bind (("M-n" . flycheck-next-error)
