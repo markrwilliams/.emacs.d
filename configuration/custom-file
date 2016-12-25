@@ -5,6 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(display-time-mode t)
  '(helm-grep-default-command "grep --color=always -a -d skip -n%cH -e '%p' %f")
+ '(history-delete-duplicates t)
  '(inhibit-startup-echo-area-message nil)
  '(inhibit-startup-screen t)
  '(package-archives
@@ -14,6 +15,7 @@
  '(package-selected-packages
    (quote
     ("use-package" pyvenv helm adaptive-wrap column-marker jedi flycheck browse-kill-ring browse-killring sml-mode use-package tuareg tracwiki-mode solarized-theme python-docstring pytest mmm-mode js2-mode flycheck-pyflakes f auto-virtualenv)))
+ '(savehist-additional-variables (quote (kill-ring search-ring regexp-search-ring)))
  '(visible-bell t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

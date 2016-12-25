@@ -13,7 +13,11 @@
 
 (setq mouse-drag-copy-region t)         ;...selecting a region places
                                         ;it in the kill buffer
-;; save the minibuffer's history
+;; save history!
+(savehist-mode 1)
+;; can't set this in customize-variable because it wants an integer,
+;; even though its documentation says that t means save everything
+(setq history-length t)
 (savehist-mode 1)
 
 ;; handle compressed files
