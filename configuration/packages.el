@@ -57,8 +57,7 @@
 (use-package auto-virtualenv :ensure t)
 (use-package column-marker :ensure t)
 (use-package jedi
-  :config (when (not (and (boundp 'jedi:environment-root) jedi:environment-root))
-            (jedi:install-server))
+  :config (jedi:install-server)
   :ensure t)
 (use-package python
   :bind (("M-n" . flycheck-next-error)
