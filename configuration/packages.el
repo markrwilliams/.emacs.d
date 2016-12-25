@@ -5,7 +5,14 @@
 ;;;
 ;;; Code:
 
+
 (package-initialize)
+
+;; bootstrap
+(when (not (fboundp 'use-package))
+  (package-refresh-contents)
+  (package-install 'use-package))
+
 
 (use-package flycheck
   :config (global-flycheck-mode)
@@ -49,7 +56,10 @@
   :ensure t )
 (use-package auto-virtualenv :ensure t)
 (use-package column-marker :ensure t)
-(use-package jedi :ensure t)
+(use-package jedi
+  :config (when (not (and (boundp 'jedi:environment-root) jedi:environment-root))
+            (jedi:install-server))
+  :ensure t)
 (use-package python
   :bind (("M-n" . flycheck-next-error)
          ("M-p" . flycheck-previous-error)

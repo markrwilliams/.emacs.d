@@ -13,7 +13,7 @@
      ("melpa" . "https://melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (helm adaptive-wrap column-marker jedi flycheck browse-kill-ring browse-killring sml-mode use-package tuareg tracwiki-mode solarized-theme python-docstring pytest mmm-mode js2-mode flycheck-pyflakes f auto-virtualenv)))
+    ("use-package" pyvenv helm adaptive-wrap column-marker jedi flycheck browse-kill-ring browse-killring sml-mode use-package tuareg tracwiki-mode solarized-theme python-docstring pytest mmm-mode js2-mode flycheck-pyflakes f auto-virtualenv)))
  '(visible-bell t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
