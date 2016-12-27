@@ -53,7 +53,9 @@
 (use-package adaptive-wrap :ensure t)
 (use-package python-docstring :ensure t)
 (use-package pyvenv
-  :config (pyvenv-tracking-mode)
+  :config (progn
+            (pyvenv-mode)
+            (pyvenv-tracking-mode))
   :ensure t )
 (use-package auto-virtualenv :ensure t)
 (use-package column-marker :ensure t)
@@ -71,6 +73,11 @@ understand 'type."
                 (action . helm-grep-action)))
             )
   :ensure t)
+(use-package flycheck-pyflakes
+  :config (progn
+            (setq flycheck-checkers (delete 'python-pyflakes flycheck-checkers))
+            (add-to-list 'flycheck-checkers 'python-pyflakes 'append))
+  :ensure t)
 (use-package python
   :bind (("M-n" . flycheck-next-error)
          ("M-p" . flycheck-previous-error)
@@ -81,21 +88,36 @@ understand 'type."
             (add-hook 'python-mode-hook (lambda ()
                                           (local-unset-key "\C-c\C-s")
                                           (local-set-key "\C-c\C-s" 'python-swap-quotes)))
+
             (python-docstring-install)
-            ;; auto activate virtualenvs in pyvenv
-            (add-hook 'python-mode-hook (lambda () (ignore-errors (auto-virtualenv-set-virtualenv))))
-            ;; () [] {} '' ""
-            (add-hook 'python-mode-hook 'electric-pair-mode)
+
+            (establish-python-twistedchecker)
+            (add-hook 'python-mode-hook (lambda ()
+                                          (ignore-errors
+                                            ;; try to auto activate
+                                            ;; virtualenvs in pyvenv
+                                            (auto-virtualenv-set-virtualenv)
+                                            ;; stash the name of the
+                                            ;; activate virtualenv so
+                                            ;; pyvenv-tracking-mode
+                                            ;; can pick it up
+                                            (setq-local pyvenv-workon pyvenv-virtual-env-name)
+                                            ;; if we appear to be in a
+                                            ;; twisted virtualenv, use
+                                            ;; twistedchecker
+                                            (when (string-match "twisted" pyvenv-workon)
+                                                (flycheck-select-checker 'python-twistedchecker)))))
+
             ;; wrap stupidly long lines
             (add-hook 'python-mode-hook (lambda ()
                                           (adaptive-wrap-prefix-mode t)
                                           (setf adaptive-wrap-extra-indent 2)))
+
             (add-hook 'python-mode-hook (lambda ()
                                           (when (and (boundp 'pyvenv-virtual-env) pyvenv-virtual-env)
                                             (set (make-local-variable 'jedi:server-args)
                                                  `("--virtual-env" ,pyvenv-virtual-env)))
-                                          (jedi:setup)))
-            ))
+                                          (jedi:setup)))))
 
 
 ;;; packages.el ends here

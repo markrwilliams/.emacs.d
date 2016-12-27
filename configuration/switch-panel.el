@@ -55,4 +55,8 @@
 
 ;; nice size
 (set-face-attribute 'default nil :height 100)
+
+;; () [] {} '' ""
+(electric-pair-mode)
+
 ;;; switch-panel.el ends here
