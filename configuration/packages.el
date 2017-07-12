@@ -87,7 +87,11 @@ understand 'type."
             ;; swap quotes
             (add-hook 'python-mode-hook (lambda ()
                                           (local-unset-key "\C-c\C-s")
-                                          (local-set-key "\C-c\C-s" 'python-swap-quotes)))
+                                          (local-set-key "\C-c\C-s" 'python-swap-quotes)
+                                          (local-unset-key "\C-c\C-n")
+                                          (local-set-key "\C-c\C-n" 'find-next-string)
+                                          (local-unset-key "\C-c\C-l")
+                                          (local-set-key "\C-c\C-l" 'python-choose-string-literal)))
 
             (python-docstring-install)
 

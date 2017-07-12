@@ -5,7 +5,64 @@
 ;;;
 ;;; Code:
 
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(column-number-mode)
+
+(defun find-next-string ()
+  "Find the next string after the current one."
+  (interactive)
+  (let* ((stop (1+ (point-max)))
+         (next-state (save-excursion (syntax-ppss (1+ (point)))))
+         (string-is-next (eq (syntax-ppss-context next-state) 'string)))
+    (when string-is-next
+      (goto-char (scan-sexps (point) 1)))
+    (while (and (< (point) stop)
+                (not (eq 'string (syntax-ppss-context (syntax-ppss)))))
+      (forward-char))
+    (backward-char)))
+
+
+(defun python-choose-string-literal (prefix)
+  "Change a string literal's type.
+PREFIX - (n)ative (b)ytes (u)nicode"
+  (interactive "c(n)ative (b)ytes (u)nicode")
+  (when (not (member prefix '(?n ?b ?u)))
+    (user-error "%c not n b or u" prefix))
+  (let ((end nil))
+    (save-excursion
+      (let ((state (syntax-ppss (1+ (point)))))
+        (when (eq 'string (syntax-ppss-context state))
+          (let* ((left (nth 8 state)))
+            (goto-char left)
+            (cond
+             ((= prefix ?n)
+              (when (or (= ?u (char-before))
+                        (= ?b (char-before)))
+                (delete-char -1)))
+             ((not (= prefix (char-before)))
+              (when (or (and (= prefix ?u) (= ?b (char-before)))
+                        (and (= prefix ?b) (= ?u (char-before))))
+                (delete-char -1))
+              (insert-char prefix)))))))))
+
+
+(defun python-query-string-literals ()
+  "Interactively change string literals' types."
+  (interactive)
+  (let (done key)
+    (while (not done)
+      (find-next-string)
+      (if (>= (point) (point-max))
+          (setq done t)
+        (progn
+          (setq key (read-event "(n)ative (b)ytes (u)nicode (s)kip (q)uit"))
+          (when (not (member key '(?n ?b ?u ?s ?q)))
+            (user-error "%c not n b or u or s or q" key))
+          (cond
+           ((= key ?q) (setq done t))
+           ((not (= key ?s))
+            (python-choose-string-literal key)
+            (forward-sexp))))))))
+
 
 (defun python-swap-quotes ()
   "Swap single and double quotes."
