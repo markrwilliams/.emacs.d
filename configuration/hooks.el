@@ -6,6 +6,4 @@
 ;;;
 ;;; Code:
 
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-
 ;;; hooks.el ends here

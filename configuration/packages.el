@@ -123,5 +123,38 @@ understand 'type."
                                                  `("--virtual-env" ,pyvenv-virtual-env)))
                                           (jedi:setup)))))
 
+;; Rust!
+(use-package rust-mode
+  :bind (("C-M-\\" . rust-format-buffer))
+  :ensure t
+  :config (flycheck-rust-setup))
+
+(use-package cargo
+  :ensure t
+  :config (progn (add-hook 'rust-mode-hook 'cargo-minor-mode)))
+
+(use-package company
+  :ensure t)
+
+(use-package racer
+  :ensure t
+  :config (progn
+            (setq racer-cmd "~/.cargo/bin/racer")
+            (setq racer-rust-src-path "~/src/rust/rustlang/src")
+            (add-hook 'rust-mode-hook #'racer-mode)
+            (add-hook 'racer-mode-hook #'eldoc-mode)
+            (add-hook 'racer-mode-hook #'company-mode)))
+
+(use-package toml-mode
+  :ensure t)
+
+(use-package dockerfile-mode
+  :ensure t)
+
+(use-package php-mode
+  :ensure t)
+
+(use-package ws-butler
+  :ensure t)
 
 ;;; packages.el ends here
