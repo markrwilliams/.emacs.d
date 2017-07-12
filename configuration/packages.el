@@ -109,7 +109,7 @@ understand 'type."
                                             ;; if we appear to be in a
                                             ;; twisted virtualenv, use
                                             ;; twistedchecker
-                                            (when (string-match "twisted" pyvenv-workon)
+                                            (when (or (string-match "twisted" pyvenv-workon) (string-prefix-p "tx" pyvenv-workon))
                                                 (flycheck-select-checker 'python-twistedchecker)))))
 
             ;; wrap stupidly long lines
