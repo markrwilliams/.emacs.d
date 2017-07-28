@@ -15,7 +15,7 @@
      ("melpa" . "https://melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (docker-mode ws-butler dockerfile-mode yaml-mode php-mode toml-mode toml company company-mode rust racer cargo flycheck-rust rust-mode counsel ivy swiper "use-package" pyvenv helm adaptive-wrap column-marker jedi flycheck browse-kill-ring browse-killring sml-mode use-package tuareg tracwiki-mode solarized-theme python-docstring pytest mmm-mode js2-mode flycheck-pyflakes f auto-virtualenv)))
+    (markdown-mode+ magit docker-mode ws-butler dockerfile-mode yaml-mode php-mode toml-mode toml company company-mode rust racer cargo flycheck-rust rust-mode counsel ivy swiper "use-package" pyvenv helm adaptive-wrap column-marker jedi flycheck browse-kill-ring browse-killring sml-mode use-package tuareg tracwiki-mode solarized-theme python-docstring pytest mmm-mode js2-mode flycheck-pyflakes f auto-virtualenv)))
  '(python-environment-virtualenv (quote ("virtualenv" "--python" "pypy" "--quiet")))
  '(python-shell-virtualenv-root "/home/mrw/.virtualenvs/pyopenssl")
  '(pyvenv-virtualenvwrapper-python "/usr/bin/python")

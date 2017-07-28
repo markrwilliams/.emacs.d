@@ -155,6 +155,11 @@ understand 'type."
   :ensure t)
 
 (use-package ws-butler
-  :ensure t)
+  :ensure t
+  :config (progn (ws-butler-global-mode)))
+
+(use-package magit
+  :ensure t
+  :bind (("C-x g" . magit-status)))
 
 ;;; packages.el ends here
