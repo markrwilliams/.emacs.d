@@ -110,4 +110,76 @@ PREFIX - (n)ative (b)ytes (u)nicode"
 ;;           (lambda () (flycheck-select-checker 'python-twistedchecker)))
 
 
+;; Rewrite footnotes crap
+
+(defun mrw-rst-find-footnote (limit)
+  (save-match-data
+    (if (not (re-search-forward (rst-re 'ilm-pfx '(:grp fnc-tag "_") 'ilm-sfx) limit t))
+        nil
+      (let ((match-end (match-end 0)))
+        (goto-char (match-beginning 1))
+        (looking-at "\\[\\([0-9]\+\\)\\]")
+        ;; assume footnotes start at 1 lol
+        (if (string-to-number (match-string 1))
+            (progn
+              (goto-char match-end)
+              (cons (match-string 1) (match-beginning 1)))
+          (error "Not a footnote"))))))
+
+(defun mrw-rst-find-footnote-definition (ref)
+  (save-excursion
+    (let (position)
+    (while (and (not position) (re-search-forward (rst-re 'lin-beg 'fnc-sta-2) nil t))
+        (goto-char (match-beginning 2))
+        (save-match-data
+          (looking-at "\\[\\([0-9]\+\\)\\]")
+          (if (string= (match-string 1) ref)
+              (setq position (match-beginning 1)))))
+    position)))
+
+
+(defun mrw-rst-find-footnote-cutoff ()
+  (save-excursion
+    (re-search-forward (rst-re 'lin-beg 'fnc-sta-2))
+    (match-beginning 0)))
+
+
+(defun mrw-rst-footnote-definition-pairs ()
+  (save-excursion
+    (let ((beginning-of-footnote-defs (mrw-rst-find-footnote-cutoff))
+          (footnote-position nil)
+          (footnotes nil)
+          (pairs nil))
+      (while (not (null (setq footnote-position (mrw-rst-find-footnote beginning-of-footnote-defs))))
+        (let* ((footnote (car footnote-position))
+               (position (cdr footnote-position))
+               (definition-position (mrw-rst-find-footnote-definition footnote)))
+          (when (and definition-position (not (member footnote footnotes)))
+            (add-to-list 'footnotes footnote)
+            (add-to-list 'pairs (cons position definition-position) t))))
+      pairs)))
+
+(defun mrw-rst-rewrite-footnote-numbers (pairs)
+  (save-excursion
+    (let ((footnote (length pairs)))
+      (dolist (footnote-definition (nreverse pairs))
+        (let ((footnote-position (car footnote-definition))
+              (footnote-definition-position (cdr footnote-definition)))
+          (goto-char footnote-definition-position)
+          (zap-to-char nil ?\])
+          (insert (number-to-string footnote) "]")
+          (goto-char footnote-position)
+          (zap-to-char nil ?\])
+          (insert (number-to-string footnote) "]")
+          (setq footnote (1- footnote)))))))
+
+
+(defun rst-rewrite-footnotes ()
+  "Number footnotes in a reStructuredText file numbered by position.
+The footnotes must be uniquely identified"
+  (interactive)
+  (mrw-rst-rewrite-footnote-numbers (mrw-rst-footnote-definition-pairs)))
+
+;; End rewrite footnotes crap.
+
 ;;; extras.el ends here
